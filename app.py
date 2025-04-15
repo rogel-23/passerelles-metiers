@@ -241,12 +241,39 @@ if fichier_competences and fichier_client:
         st.dataframe(top_metiers)
 
         # 🔍 Graphique des scores (bar chart)
-        st.markdown("### 📊 Visualisation des similarités pondérées")
-        fig, ax = plt.subplots()
-        ax.barh(top_metiers["Intitulé"], top_metiers["Score pondéré total"])
+        # 🔁 Créer un tableau croisé avec Score pondéré par catégorie
+        df_pivot = df_resultats_complets.pivot_table(
+            index=["Code Métier", "Intitulé"],
+            columns="Catégorie",
+            values="Score pondéré",
+            aggfunc="sum",
+            fill_value=0
+        ).reset_index()
+
+        # 🔁 Recalcul du score total pour tri
+        df_pivot["Score total"] = df_pivot[categories_selectionnees].sum(axis=1)
+        df_pivot = df_pivot.sort_values("Score total", ascending=False).head(20)
+
+        # 🔍 Graphique empilé
+        st.markdown("### 📊 Répartition des scores pondérés par type de compétence")
+        fig, ax = plt.subplots(figsize=(8, 6))
+
+        bottom = None
+        labels = df_pivot["Intitulé"]
+
+        # Colorer chaque barre selon la catégorie
+        for cat in categories_selectionnees:
+            ax.barh(labels, df_pivot[cat], left=bottom, label=cat)
+            if bottom is None:
+                bottom = df_pivot[cat].copy()
+            else:
+                bottom += df_pivot[cat]
+
         ax.invert_yaxis()
         ax.set_xlabel("Score pondéré")
-        ax.set_title("Top 20 des métiers les plus proches")
+        ax.set_title("Top 20 métiers – scores par type de compétence")
+        ax.legend(title="Catégorie")
+
         st.pyplot(fig)
 
         # Filtres et formats Excel
