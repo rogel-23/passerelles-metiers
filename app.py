@@ -411,7 +411,7 @@ if fichier_competences and fichier_client:
                 bar2 = st.progress(0)
                 df_sortantes = calculer_passerelles(df_metiers_client, df_metiers_hors_client, progress_bar=bar2)
 
-                st.success("✅ Calcul terminé ! Prêt à télécharger.")
+                st.success("✅ Calcul terminé ! Prêt à télécharger")
 
                 # Export Excel
                 buffer_brut = io.BytesIO()
