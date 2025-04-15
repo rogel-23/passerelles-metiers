@@ -5,6 +5,17 @@ import matplotlib.pyplot as plt
 from datetime import datetime
 
 # ------------------------------
+# 🔐 Sécurité : accès par mot de passe
+# ------------------------------
+CORRECT_PASSWORD = "Passerelle2025"
+
+password = st.text_input("🔒 Veuillez entrer le mot de passe pour accéder à l'outil :", type="password")
+
+if password != CORRECT_PASSWORD:
+    st.warning("Mot de passe incorrect ou manquant. Veuillez entrer le bon mot de passe.")
+    st.stop()
+
+# ------------------------------
 # TITRE & UPLOAD
 # ------------------------------
 st.title("🧭 Outil de passerelles métiers")
